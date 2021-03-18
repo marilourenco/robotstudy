@@ -1,16 +1,33 @@
 *** Settings ***
 Resource        ../resource/Resource.robot
-Test setup      Abrir Navegador
-Test teardown   Fechar Navegador
+Test Setup      Abrir navegador
+Test Teardown   Fechar navegador
+
+*** Variables ***
+${URL}          http://automationpractice.com
+${BROWSER}      chrome
 
 *** Test Case ***
-Cenario 01: Search Existing Products
-    Given that I'm on the home page of the site
-    When I search for the product "Blouse"
-    Then the product "Blouse" must be listed on the search results page
+Cenário 01: Pesquisar produto existente
+    Dado que estou na página home do site
+    Quando eu pesquisar pelo produto "Blouse"
+    Então o produto "Blouse" deve ser listado na página de resultado da busca
 
-# Cenario 02: Search for non-existent products
-#     Given that I'm on the home page of the site
-#     When I search for the product "Produto Inexistente"
-#     Then the page should display the message "No results were found for your search "Produto Inexistente""
+Cenário 02: Pesquisar produto não existente
+    Dado que estou na página home do site
+    Quando eu pesquisar pelo produto "itemNãoExistente"
+    Então a página deve exibir a mensagem "No results were found for your search "itemNãoExistente""
+
 *** Keywords ***
+Dado que estou na página home do site
+    Acessar a página home do site
+
+Quando eu pesquisar pelo produto "${PRODUTO}"
+    Digitar o nome do produto "${PRODUTO}" no campo de pesquisa
+    Clicar no botão pesquisar
+
+Então o produto "${PRODUTO}" deve ser listado na página de resultado da busca
+    Conferir se o produto "${PRODUTO}" foi listado no site
+
+Então a página deve exibir a mensagem "${MENSAGEM_ALERTA}"
+    Conferir mensagem de erro "${MENSAGEM_ALERTA}"

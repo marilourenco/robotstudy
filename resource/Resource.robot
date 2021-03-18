@@ -1,35 +1,36 @@
 *** Settings ***
-Library         SeleniumLibrary
-
+Library    SeleniumLibrary
 
 *** Variables ***
-${URL}       http://automationpractice.com
-${BROWSER}   chrome
+${BROWSER}      firefox
+${URL}          http://automationpractice.com
 
 *** Keywords ***
+#### Setup e Teardown
+Abrir navegador
+    Open Browser    about:blank   ${BROWSER}
 
-### setup and teardown
-Abrir Navegador
-    Open Browser   about:blank  ${BROWSER}
-
-Fechar Navegador
+Fechar navegador
     Close Browser
 
-### steps
-Given that I'm on the home page of the site
-    Go To             ${URL}
-    Title Should Be   My Store
+#### Ações
+Acessar a página home do site
+    Go To               ${URL}
+    Title Should Be     My Store
 
-When I search for the product ${PRODUCT}
-    Input Text     name=search_query  ${PRODUCT}
-    Click Element  name=submit_search
+Digitar o nome do produto "${PRODUTO}" no campo de pesquisa
+    Input Text          name=search_query    ${PRODUTO}
 
-Then the product ${PRODUCT} must be listed on the search results page
-    Wait until Element Is Visible  css=#center_column > h1
-    Title Should Be                Search - My Store
-    Page Should Contain Image      //*[@id="center_column"]//*[@src="http://automationpractice.com/img/p/7/7-home_default.jpg"]
-    Page Should Contain Link       //*[@id="center_column"]//a[@class="product-name"][contains(text(),"Blouse")]
+Clicar no botão pesquisar
+    Click Element       name=submit_search
 
-Then the page should display the message ${MENSAGEM_ALERTA}
-    Wait Until Element Is Visible   //*[@id="center_column"]/p
-    Element Text Should Be          //*[@id="center_column"]/p  ${MENSAGEM_ALERTA}
+#### Conferências
+Conferir se o produto "${PRODUTO}" foi listado no site
+    Wait Until Element Is Visible   css=#center_column > h1
+    Title Should Be                 Search - My Store
+    Page Should Contain Image       xpath=//*[@id="center_column"]//*[@src='${URL}/img/p/7/7-home_default.jpg']
+    Page Should Contain Link        xpath=//*[@id="center_column"]//a[@class="product-name"][contains(text(),"${PRODUTO}")]
+
+Conferir mensagem de erro "${MENSAGEM_ALERTA}"
+    Wait Until Element Is Visible   xpath=//*[@id="center_column"]/p[@class='alert alert-warning']
+    Element Text Should Be          xpath=//*[@id="center_column"]/p[@class='alert alert-warning']    ${MENSAGEM_ALERTA}
